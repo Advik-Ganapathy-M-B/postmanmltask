@@ -35,3 +35,22 @@ def gini(y):
     impurity=1-((truecount/len(y))**2)-((falsecount/len(y))**2)
     return impurity
 print(gini(["Pass","Fail","Fail","Fail"]))
+
+def split_data(X,Y,feature,threshold):
+    X_left=[]
+    X_right=[]
+    Y_right=[]
+    Y_left=[]
+    for i in range(0,len(X)):
+        if X[i][feature]<threshold:
+            X_left.append(X[i])
+            Y_left.append(Y[i])
+        else: 
+            X_right.append(X[i])
+            Y_right.append(Y[i])
+    return X_left,X_right,Y_left,Y_right
+leftX,rightX,leftY,rightY=split_data(X,Y,0,4)
+print(leftX)
+print(leftY)
+print(rightX)
+print(rightY)

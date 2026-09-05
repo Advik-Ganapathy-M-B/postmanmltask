@@ -32,9 +32,11 @@ def gini(y):
             truecount+=1
         elif (y[i]=="Fail"):
             falsecount+=1
-    impurity=1-((truecount/len(y))**2)-((falsecount/len(y))**2)
+    if len(y)==0:
+        impurity=0.0
+    else:
+        impurity=1-((truecount/len(y))**2)-((falsecount/len(y))**2)
     return impurity
-print(gini(["Pass","Fail","Fail","Fail"]))
 
 def split_data(X,Y,feature,threshold):
     X_left=[]
@@ -49,8 +51,41 @@ def split_data(X,Y,feature,threshold):
             X_right.append(X[i])
             Y_right.append(Y[i])
     return X_left,X_right,Y_left,Y_right
-leftX,rightX,leftY,rightY=split_data(X,Y,0,4)
-print(leftX)
-print(leftY)
-print(rightX)
-print(rightY)
+
+def ginisplit(set1,set2):
+    avg= (gini(set1)*len(set1)/(len(set1)+len(set2)))+gini(set2)*len(set2)/(len(set1)+len(set2))
+    return avg
+
+def bestsplit(X,Y):
+    feature=0
+    testthreshold=0
+    step=X[0][1]/1000 
+    maxfeature1=max(row[0] for row in X)
+    maxfeature2=max(row[1] for row in X)
+    mingini=1
+    done=0
+    while True:
+        X_left,X_right,Y_left,Y_right=split_data(X,Y,feature,testthreshold)
+        score=ginisplit(Y_left,Y_right)
+        if score<mingini:
+            mingini=score
+            nodeleft=X_left
+            noderight=X_right
+            dataleft=Y_left
+            dataright=Y_right
+            setthreshold=testthreshold
+            setfeature=feature
+        testthreshold+=step
+        if testthreshold>maxfeature1:
+            feature=1
+            step=X[1][1]/1000
+            testshreshold=0
+            done=1
+        if done==1 and testthreshold>maxfeature2:
+            return (nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
+        
+        
+             
+nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
+print(nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
+

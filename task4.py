@@ -23,6 +23,31 @@ Y = [
     "Pass",
     "Pass"
 ]
+Xcopy = [
+    [1, 60],
+    [2, 65],
+    [2, 80],
+    [3, 70],
+    [4, 75],
+    [5, 80],
+    [6, 85],
+    [7, 90],
+    [8, 95],
+    [9, 90]
+]
+
+Ycopy = [
+    "Fail",
+    "Fail",
+    "Fail",
+    "Fail",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass"
+]
 #making the function to calculate gini impurity
 def gini(y):
     truecount=0
@@ -83,9 +108,45 @@ def bestsplit(X,Y):
             done=1
         if done==1 and testthreshold>maxfeature2:
             return (nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
-        
-        
-             
-nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
-print(nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
+leaf=[]
+leafdata=[]
+pendingnodes=[] #using as a stack
+pendingdata=[]  #using as a stack
+splits = []
+def tree(X,Y):
+    finish=0
+    while True:
+            if gini(Y)==0:#for case when its already pure at start
+                leaf.append(X)
+                leafdata.append(Y)
+                break
+            nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
+            splits.append((setfeature, setthreshold))
+            pendingnodes.append(noderight)
+            pendingdata.append(dataright) #for all the right branches that we eval after all left
+            if gini(dataleft)==0 and finish==0:
+                leaf.append(nodeleft)
+                leafdata.append(dataleft)
+                finish=1
+            else:
+                X=nodeleft
+                Y=dataleft
+            if finish==1:
+                noderight=pendingnodes.pop()
+                dataright=pendingdata.pop()
+            if gini(dataright)==0 and finish==1:
+                leaf.append(noderight)
+                leafdata.append(dataright)
+                if len(pendingnodes)==0:
+                    break
+            else:
+                X=noderight
+                Y=dataright
+                finish=0
+    return leaf,leafdata
+leaf, leafdata = tree(X, Y)
+
+print(leaf)
+print(leafdata)
+            
 

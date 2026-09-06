@@ -11,18 +11,7 @@ X = [
     [9, 90]
 ]
 
-Y = [
-    "Fail",
-    "Fail",
-    "Fail",
-    "Fail",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass"
-]
+Y = ["Fail","Fail","Pass","Fail","Pass","Fail","Pass","Pass","Pass","Pass"]
 Xcopy = [
     [1, 60],
     [2, 65],
@@ -121,7 +110,7 @@ def tree(X,Y):
                 leafdata.append(Y)
                 break
             nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
-            splits.append((setfeature, setthreshold))
+            splits.append((X,setfeature, setthreshold,nodeleft, noderight))
             pendingnodes.append(noderight)
             pendingdata.append(dataright) #for all the right branches that we eval after all left
             if gini(dataleft)==0 and finish==0:
@@ -131,6 +120,7 @@ def tree(X,Y):
             else:
                 X=nodeleft
                 Y=dataleft
+                continue
             if finish==1:
                 noderight=pendingnodes.pop()
                 dataright=pendingdata.pop()
@@ -139,14 +129,42 @@ def tree(X,Y):
                 leafdata.append(dataright)
                 if len(pendingnodes)==0:
                     break
+                else:
+                    X=pendingnodes.pop()
+                    Y=pendingdata.pop()
+                    finish=0
             else:
                 X=noderight
                 Y=dataright
                 finish=0
     return leaf,leafdata
 leaf, leafdata = tree(X, Y)
+rightnodes=[]
+leftnodes=[]
+splitscopy=splits.copy()
+def predict(x):
+    index=0
+    while True:
+        for i in range(0,index+1):
+            inputbranch,feature, threshold,leftbranch, rightbranch=splits.pop(i)
+        if x[feature]<threshold: 
+            leftnodes.append(x)
+            currentbranch=leftbranch
+            if inputbranch==currentbranch:
+                for i in range(0,len(splits)):
+                    if inputbranch==splits[i][0]:
+                        index=i
 
-print(leaf)
-print(leafdata)
-            
-
+            result=False
+        else:
+            rightnodes.append(x)
+            currentbranch=rightbranch
+            if inputbranch==currentbranch:
+                for i in range(0,len(splits)):
+                    if inputbranch==splits[i][0]:
+                        index=i
+            result= True
+        if len(splits)==0:
+            break
+    return rightnodes,leftnodes,result
+print(predict([5,80]))

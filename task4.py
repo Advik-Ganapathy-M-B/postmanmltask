@@ -25,18 +25,8 @@ Xcopy = [
     [9, 90]
 ]
 
-Ycopy = [
-    "Fail",
-    "Fail",
-    "Fail",
-    "Fail",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass"
-]
+Ycopy = ["Fail","Fail","Pass","Fail","Pass","Fail","Pass","Pass","Pass","Pass"]
+
 #making the function to calculate gini impurity
 def gini(y):
     truecount=0
@@ -90,10 +80,10 @@ def bestsplit(X,Y):
             setthreshold=testthreshold
             setfeature=feature
         testthreshold+=step
-        if testthreshold>maxfeature1:
+        if testthreshold>maxfeature1 and done==0:
             feature=1
             step=X[1][1]/1000
-            testshreshold=0
+            testthreshold=0
             done=1
         if done==1 and testthreshold>maxfeature2:
             return (nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
@@ -139,32 +129,48 @@ def tree(X,Y):
                 finish=0
     return leaf,leafdata
 leaf, leafdata = tree(X, Y)
-rightnodes=[]
-leftnodes=[]
-splitscopy=splits.copy()
+print(leaf)
+print(leafdata)
+print(splits)
 def predict(x):
-    index=0
+    rightnodes=[]
+    leftnodes=[]
+    
+    currentbranch=X
+    
     while True:
-        for i in range(0,index+1):
-            inputbranch,feature, threshold,leftbranch, rightbranch=splits.pop(i)
-        if x[feature]<threshold: 
-            leftnodes.append(x)
-            currentbranch=leftbranch
-            if inputbranch==currentbranch:
-                for i in range(0,len(splits)):
-                    if inputbranch==splits[i][0]:
-                        index=i
-
-            result=False
-        else:
-            rightnodes.append(x)
-            currentbranch=rightbranch
-            if inputbranch==currentbranch:
-                for i in range(0,len(splits)):
-                    if inputbranch==splits[i][0]:
-                        index=i
-            result= True
-        if len(splits)==0:
-            break
-    return rightnodes,leftnodes,result
-print(predict([5,80]))
+        foundsplit=False
+        
+        for split in splits:
+            inputbranch,feature,threshold,leftbranch,rightbranch=split
+            
+            if currentbranch==inputbranch:
+                
+                if x[feature]<threshold:
+                    leftnodes.append(x)
+                    currentbranch=leftbranch
+                else:
+                    rightnodes.append(x)
+                    currentbranch=rightbranch
+                
+                foundsplit=True
+                break
+        
+        if foundsplit==False:
+            for i in range(len(leaf)):
+                if currentbranch==leaf[i]:
+                    result=leafdata[i][0]
+                    return rightnodes,leftnodes,result
+            
+def accuracy():
+    correct=0
+    
+    for i in range(len(X)):
+        result=predict(X[i])[2]
+        
+        if result==Y[i]:
+            correct+=1
+    
+    return correct/len(X)
+print(accuracy())
+print(predict([1,60]))

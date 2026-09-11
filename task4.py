@@ -1,17 +1,17 @@
-X = [
+
+X_train=[
     [1, 60],
     [2, 65],
     [2, 80],
     [3, 70],
     [4, 75],
-    [5, 80],
-    [6, 85],
-    [7, 90],
-    [8, 95],
-    [9, 90]
-]
-
-Y = ["Fail","Fail","Pass","Fail","Pass","Fail","Pass","Pass","Pass","Pass"]
+    [5, 80]
+    ]
+X_test=[ [6, 85],
+    [7, 90],[8, 95],
+    [9, 90]]
+Y_train = ["Fail","Fail","Pass","Fail","Pass","Fail"]
+Y_test=["Pass","Pass","Pass","Pass"]
 Xcopy = [
     [1, 60],
     [2, 65],
@@ -128,15 +128,12 @@ def tree(X,Y):
                 Y=dataright
                 finish=0
     return leaf,leafdata
-leaf, leafdata = tree(X, Y)
-print(leaf)
-print(leafdata)
-print(splits)
+leaf, leafdata = tree(X_train, Y_train)
 def predict(x):
     rightnodes=[]
     leftnodes=[]
     
-    currentbranch=X
+    currentbranch=X_train
     
     while True:
         foundsplit=False
@@ -162,7 +159,8 @@ def predict(x):
                     result=leafdata[i][0]
                     return rightnodes,leftnodes,result
             
-def accuracy():
+def accuracy(X,Y):
+    print( X,Y)
     correct=0
     
     for i in range(len(X)):
@@ -172,5 +170,5 @@ def accuracy():
             correct+=1
     
     return correct/len(X)
-print(accuracy())
-print(predict([1,60]))
+print("Training accuracy: ",accuracy(X_train,Y_train))
+print("Testing accuracy: ",accuracy(X_test,Y_test))

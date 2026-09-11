@@ -92,13 +92,30 @@ leafdata=[]
 pendingnodes=[] #using as a stack
 pendingdata=[]  #using as a stack
 splits = []
+
+def regulation(X):
+    if len(X)<=3:
+        return 1
+    else:
+        return 0
 def tree(X,Y):
     finish=0
+    counter=0
     while True:
             if gini(Y)==0:#for case when its already pure at start
                 leaf.append(X)
                 leafdata.append(Y)
                 break
+            if regulation(X):
+                leaf.append(X)
+                leafdata.append([Y[0]])
+
+                if len(pendingnodes) == 0:
+                    break
+                else:
+                    X = pendingnodes.pop()
+                    Y = pendingdata.pop()
+                    continue
             nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
             splits.append((X,setfeature, setthreshold,nodeleft, noderight))
             pendingnodes.append(noderight)
@@ -128,7 +145,9 @@ def tree(X,Y):
                 Y=dataright
                 finish=0
     return leaf,leafdata
+    
 leaf, leafdata = tree(X_train, Y_train)
+
 def predict(x):
     rightnodes=[]
     leftnodes=[]

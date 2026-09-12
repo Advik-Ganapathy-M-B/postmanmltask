@@ -1,70 +1,115 @@
 import random
 X_train = [
-    [1, 55],
-    [2, 60],
-    [2, 65],
-    [3, 62],
-    [3, 68],
-    [4, 65],
-    [4, 70],
-    [5, 68],
-    [5, 72],
-    [6, 70],
-    [6, 75],
-    [7, 73],
-    [7, 78],
-    [8, 75],
-    [8, 80],
-    [9, 78],
-    [9, 82],
-    [10, 80],
-    [10, 85],
-    [11, 83],
-    [11, 88],
-    [12, 85],
-    [12, 90],
-    [13, 88],
-    [13, 92],
-    [14, 90],
-    [14, 94],
-    [15, 92],
-    [16, 95],
-    [17, 97]
+    [2, 65, 45, 50, 6],
+    [3, 70, 50, 55, 6],
+    [4, 72, 55, 58, 7],
+    [2, 68, 48, 52, 5],
+    [5, 75, 62, 60, 7],
+    [3, 78, 55, 64, 6],
+    [6, 80, 68, 65, 7],
+    [4, 82, 60, 67, 6],
+    [7, 85, 72, 70, 7],
+    [5, 80, 65, 68, 8],
+    [8, 88, 75, 73, 7],
+    [6, 86, 70, 75, 6],
+    [9, 90, 82, 78, 8],
+    [7, 91, 78, 80, 7],
+    [10, 92, 85, 82, 8],
+    [8, 89, 80, 79, 7],
+    [11, 94, 88, 85, 8],
+    [9, 93, 84, 83, 7],
+    [12, 95, 90, 87, 8],
+    [10, 96, 86, 89, 7],
+
+    [1, 60, 40, 45, 5],
+    [2, 62, 42, 48, 6],
+    [3, 66, 46, 51, 6],
+    [4, 69, 52, 54, 7],
+    [5, 71, 58, 57, 6],
+    [3, 73, 50, 59, 5],
+    [6, 76, 64, 62, 7],
+    [7, 79, 66, 65, 8],
+    [8, 83, 70, 69, 7],
+    [9, 84, 74, 72, 6],
+    [10, 87, 78, 76, 8],
+    [11, 89, 81, 79, 7],
+    [12, 91, 83, 81, 8],
+    [13, 92, 87, 84, 7],
+    [14, 94, 89, 86, 8],
+    [15, 95, 92, 90, 7],
+    [4, 77, 59, 61, 6],
+    [5, 74, 61, 63, 7],
+    [7, 81, 69, 67, 6],
+    [8, 86, 76, 71, 8],
+    [6, 78, 63, 66, 5],
+    [9, 88, 77, 74, 7],
+    [10, 90, 80, 77, 6],
+    [11, 93, 85, 82, 8],
+    [13, 96, 91, 88, 7],
+    [14, 97, 93, 91, 8],
+    [2, 67, 44, 49, 7],
+    [4, 70, 53, 56, 5],
+    [5, 76, 57, 60, 6],
+    [6, 82, 67, 64, 7],
+    [8, 87, 73, 70, 6],
+    [9, 85, 79, 73, 8],
+    [10, 89, 82, 78, 7],
+    [12, 94, 88, 85, 8],
+    [13, 95, 90, 87, 6],
+    [15, 98, 94, 92, 8],
+    [3, 64, 47, 50, 5],
+    [5, 73, 56, 58, 7],
+    [7, 80, 68, 64, 6],
+    [9, 91, 81, 76, 8],
+    [11, 90, 84, 80, 7],
+    [14, 96, 92, 89, 8]
 ]
 
 Y_train = [
-    "Fail", "Fail", "Fail", "Fail", "Fail",
-    "Fail", "Fail", "Fail", "Fail", "Fail",
-    "Pass", "Fail", "Pass", "Fail", "Pass",
-    "Pass", "Pass", "Pass", "Pass", "Pass",
-    "Pass", "Pass", "Pass", "Pass", "Pass",
-    "Pass", "Pass", "Pass", "Pass", "Pass"
+    "Fail","Fail","Fail","Fail","Fail",
+    "Fail","Pass","Fail","Pass","Pass",
+    "Pass","Pass","Pass","Pass","Pass",
+    "Pass","Pass","Pass","Pass","Pass",
+    "Fail","Fail","Fail","Fail","Fail",
+    "Fail","Pass","Pass","Pass","Pass",
+    "Pass","Pass","Pass","Pass","Pass",
+    "Pass","Pass","Pass","Pass","Pass",
+    "Fail","Pass","Pass","Pass","Pass",
+    "Pass","Pass","Fail","Fail","Pass",
+    "Pass","Pass","Pass","Pass","Pass",
+    "Fail","Fail","Pass","Pass","Pass",
+    "Pass","Pass"
 ]
 
 X_test = [
-    [4, 75],
-    [6, 80],
-    [8, 85],
-    [10, 88],
-    [11, 91],
-    [12, 93],
-    [13, 95],
-    [14, 96],
-    [15, 98],
-    [18, 98]
+    [2, 66, 43, 49, 6],
+    [4, 71, 54, 57, 7],
+    [6, 77, 65, 63, 6],
+    [7, 82, 71, 68, 7],
+    [9, 86, 76, 73, 8],
+    [10, 91, 83, 79, 7],
+    [12, 93, 87, 84, 8],
+    [13, 96, 90, 88, 7],
+    [15, 97, 93, 91, 8],
+    [3, 69, 49, 53, 5],
+
+    [5, 75, 60, 59, 6],
+    [8, 84, 72, 70, 7],
+    [11, 92, 84, 81, 8],
+    [14, 95, 91, 89, 7],
+    [1, 61, 39, 44, 6],
+    [6, 79, 66, 65, 7],
+    [9, 89, 78, 75, 6],
+    [12, 95, 89, 86, 8],
+    [4, 68, 51, 55, 5],
+    [10, 88, 80, 77, 7]
 ]
 
 Y_test = [
-    "Fail",
-    "Fail",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass",
-    "Pass"
+    "Fail","Fail","Pass","Pass","Pass",
+    "Pass","Pass","Pass","Pass","Fail",
+    "Fail","Pass","Pass","Pass","Fail",
+    "Pass","Pass","Pass","Fail","Pass"
 ]
 
 #making the function to calculate gini impurity
@@ -147,7 +192,7 @@ pendingdata=[]  #using as a stack
 splits = []
 
 def regulation(X):
-    if len(X)<=3:
+    if len(X)<=5:
         return 1
     else:
         return 0
@@ -166,10 +211,10 @@ def tree(X,Y):
                     if i=="Pass":
                         passcount+=1
                 if passcount/len(Y)>=0.5:
-                    Y[0]="Pass"
+                    majority="Pass"
                 else:
-                    Y[0]="Fail"
-                leafdata.append([Y[0]])
+                    majority="Fail"
+                leafdata.append([majority])
 
                 if len(pendingnodes) == 0:
                     break
@@ -226,6 +271,7 @@ def tree(X,Y):
                 Y=dataright
                 finish=0
     return leaf,leafdata
+single_majority = "Pass" if Y_train.count("Pass") >= Y_train.count("Fail") else "Fail"
 leaf = []
 leafdata = []
 pendingnodes = []
@@ -237,7 +283,7 @@ tree(X_train, Y_train)
 single_tree = (X_train, splits.copy(), leaf.copy(), leafdata.copy())
 forest = []
 
-for i in range(50):
+for i in range(100):
     X_bootstrap, Y_bootstrap = bootstrap(X_train, Y_train)
 
     leaf = []
@@ -279,6 +325,7 @@ def singletreepredict(x):
                 if currentbranch==leaf[i]:
                     result=leafdata[i][0]
                     return rightnodes,leftnodes,result
+            return rightnodes,leftnodes,single_majority
 
 def predict(x,current_tree):
     rightnodes=[]
@@ -309,8 +356,7 @@ def predict(x,current_tree):
                 if currentbranch==leaf[i]:
                     result=leafdata[i][0]
                     return rightnodes,leftnodes,result
-            return rightnodes, leftnodes, "Fail"
-            
+            return rightnodes,leftnodes,None
 def accuracy(X,Y):
     correct=0
     
@@ -342,8 +388,9 @@ def forest_accuracy(X, Y):
             correct += 1
 
     return correct / len(X)
+"""
 print("Forest training accuracy", forest_accuracy(X_train, Y_train))
-print("Forest testing accuracy", forest_accuracy(X_test, Y_test))
+print("Forest testing accuracy", forest_accuracy(X_test, Y_test))"""
 
 from sklearn.tree import DecisionTreeClassifier
 sklearn_tree = DecisionTreeClassifier(criterion="gini")
@@ -351,11 +398,17 @@ sklearn_tree.fit(X_train, Y_train)
 
 sklearn_predictions = sklearn_tree.predict(X_test)
 sklearn_accuracy = sklearn_tree.score(X_test, Y_test)
-print("My accuracy on testing data: ",accuracy(X_test,Y_test))
+#saving the 4.6 print commands as comments 
+"""print("My accuracy on testing data: ",accuracy(X_test,Y_test))
 print("Sklearn testing accuracy:", sklearn_accuracy)
 print("Actual test data",Y_test)
 print("Sklearn predictions:", sklearn_predictions)
 my_predictions = []
 for x in X_test:
     my_predictions.append(singletreepredict(x)[2])
-print("My predictions: ",my_predictions)
+print("My predictions: ",my_predictions)"""
+#to compare accuracy and overfitting
+print("Forest training accuracy", forest_accuracy(X_train, Y_train))
+print("Forest testing accuracy", forest_accuracy(X_test, Y_test))
+print("Single tree training accuracy",accuracy(X_train, Y_train))
+print("Single tree testing accuracy",accuracy(X_test, Y_test))

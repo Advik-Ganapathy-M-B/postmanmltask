@@ -1,33 +1,85 @@
-
-X_train=[
-    [1, 60],
+import random
+X_train = [
+    [1, 55],
+    [2, 60],
     [2, 65],
-    [2, 80],
-    [3, 70],
-    [4, 75],
-    [5, 80]
-    ]
-X_test=[ [6, 85],
-    [7, 90],[8, 95],
-    [9, 90]]
-Y_train = ["Fail","Fail","Pass","Fail","Pass","Fail"]
-Y_test=["Pass","Pass","Pass","Pass"]
-Xcopy = [
-    [1, 60],
-    [2, 65],
-    [2, 80],
-    [3, 70],
-    [4, 75],
-    [5, 80],
-    [6, 85],
-    [7, 90],
-    [8, 95],
-    [9, 90]
+    [3, 62],
+    [3, 68],
+    [4, 65],
+    [4, 70],
+    [5, 68],
+    [5, 72],
+    [6, 70],
+    [6, 75],
+    [7, 73],
+    [7, 78],
+    [8, 75],
+    [8, 80],
+    [9, 78],
+    [9, 82],
+    [10, 80],
+    [10, 85],
+    [11, 83],
+    [11, 88],
+    [12, 85],
+    [12, 90],
+    [13, 88],
+    [13, 92],
+    [14, 90],
+    [14, 94],
+    [15, 92],
+    [16, 95],
+    [17, 97]
 ]
 
-Ycopy = ["Fail","Fail","Pass","Fail","Pass","Fail","Pass","Pass","Pass","Pass"]
+Y_train = [
+    "Fail", "Fail", "Fail", "Fail", "Fail",
+    "Fail", "Fail", "Fail", "Fail", "Fail",
+    "Pass", "Fail", "Pass", "Fail", "Pass",
+    "Pass", "Pass", "Pass", "Pass", "Pass",
+    "Pass", "Pass", "Pass", "Pass", "Pass",
+    "Pass", "Pass", "Pass", "Pass", "Pass"
+]
+
+X_test = [
+    [4, 75],
+    [6, 80],
+    [8, 85],
+    [10, 88],
+    [11, 91],
+    [12, 93],
+    [13, 95],
+    [14, 96],
+    [15, 98],
+    [18, 98]
+]
+
+Y_test = [
+    "Fail",
+    "Fail",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass",
+    "Pass"
+]
 
 #making the function to calculate gini impurity
+def random_features(X):
+    feature=random.randint(0,len(X[0])-1)
+    return feature
+def bootstrap(X,Y):
+    X_bootstrap=[]
+    Y_bootstrap=[]
+    length=len(X)
+    for i in range(length):
+        i=random.randint(0,length-1)
+        X_bootstrap.append(X[i])
+        Y_bootstrap.append(Y[i])
+    return X_bootstrap,Y_bootstrap
 def gini(y):
     truecount=0
     falsecount=0
@@ -61,32 +113,33 @@ def ginisplit(set1,set2):
     return avg
 
 def bestsplit(X,Y):
-    feature=0
+    feature=random_features(X)
     testthreshold=0
-    step=X[0][1]/1000 
-    maxfeature1=max(row[0] for row in X)
-    maxfeature2=max(row[1] for row in X)
+    maxfeature=max(row[feature] for row in X)
+    step=maxfeature/1000 
     mingini=1
-    done=0
-    while True:
+    nodeleft=None
+    noderight=None
+    dataleft=None
+    dataright=None
+    setthreshold=None
+    setfeature=feature
+    while testthreshold<=maxfeature:
         X_left,X_right,Y_left,Y_right=split_data(X,Y,feature,testthreshold)
-        score=ginisplit(Y_left,Y_right)
-        if score<mingini:
-            mingini=score
-            nodeleft=X_left
-            noderight=X_right
-            dataleft=Y_left
-            dataright=Y_right
-            setthreshold=testthreshold
-            setfeature=feature
+        if len(X_left)>0 and len(X_right)>0:
+            score=ginisplit(Y_left,Y_right)
+            if score<mingini:
+                mingini=score
+                nodeleft=X_left
+                noderight=X_right
+                dataleft=Y_left
+                dataright=Y_right
+                setthreshold=testthreshold
+                setfeature=feature
         testthreshold+=step
-        if testthreshold>maxfeature1 and done==0:
-            feature=1
-            step=X[1][1]/1000
-            testthreshold=0
-            done=1
-        if done==1 and testthreshold>maxfeature2:
-            return (nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
+    if nodeleft is None:
+        return None
+    return(nodeleft,noderight,dataleft,dataright,setthreshold,setfeature)
 leaf=[]
 leafdata=[]
 pendingnodes=[] #using as a stack
@@ -100,7 +153,7 @@ def regulation(X):
         return 0
 def tree(X,Y):
     finish=0
-    counter=0
+    passcount=0
     while True:
             if gini(Y)==0:#for case when its already pure at start
                 leaf.append(X)
@@ -108,6 +161,14 @@ def tree(X,Y):
                 break
             if regulation(X):
                 leaf.append(X)
+                passcount=0
+                for i in Y:
+                    if i=="Pass":
+                        passcount+=1
+                if passcount/len(Y)>=0.5:
+                    Y[0]="Pass"
+                else:
+                    Y[0]="Fail"
                 leafdata.append([Y[0]])
 
                 if len(pendingnodes) == 0:
@@ -116,7 +177,27 @@ def tree(X,Y):
                     X = pendingnodes.pop()
                     Y = pendingdata.pop()
                     continue
-            nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=bestsplit(X,Y)
+            if len(set(map(tuple, X))) == 1:
+                leaf.append(X)
+                leafdata.append(Y)
+                if len(pendingnodes) == 0:
+                    break
+                else:
+                    X = pendingnodes.pop()
+                    Y = pendingdata.pop()
+                    continue
+            result=bestsplit(X,Y)
+
+            if result is None:
+                leaf.append(X)
+                leafdata.append([Y[0]])
+                if len(pendingnodes) == 0:
+                    break
+                else:
+                    X = pendingnodes.pop()
+                    Y = pendingdata.pop()
+                    continue
+            nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=result
             splits.append((X,setfeature, setthreshold,nodeleft, noderight))
             pendingnodes.append(noderight)
             pendingdata.append(dataright) #for all the right branches that we eval after all left
@@ -146,14 +227,28 @@ def tree(X,Y):
                 finish=0
     return leaf,leafdata
     
-leaf, leafdata = tree(X_train, Y_train)
+forest = []
 
-def predict(x):
+for i in range(50):
+    X_bootstrap, Y_bootstrap = bootstrap(X_train, Y_train)
+
+    leaf = []
+    leafdata = []
+    pendingnodes = []
+    pendingdata = []
+    splits = []
+
+    tree(X_bootstrap, Y_bootstrap)
+
+    current_tree = (X_bootstrap, splits.copy(), leaf.copy(), leafdata.copy())
+    forest.append(current_tree)
+
+def predict(x,current_tree):
     rightnodes=[]
     leftnodes=[]
     
-    currentbranch=X_train
-    
+    X_bootstrap,splits, leaf, leafdata = current_tree
+    currentbranch=X_bootstrap
     while True:
         foundsplit=False
         
@@ -177,9 +272,9 @@ def predict(x):
                 if currentbranch==leaf[i]:
                     result=leafdata[i][0]
                     return rightnodes,leftnodes,result
+            return rightnodes, leftnodes, "Fail"
             
 def accuracy(X,Y):
-    print( X,Y)
     correct=0
     
     for i in range(len(X)):
@@ -189,5 +284,26 @@ def accuracy(X,Y):
             correct+=1
     
     return correct/len(X)
-print("Training accuracy: ",accuracy(X_train,Y_train))
-print("Testing accuracy: ",accuracy(X_test,Y_test))
+def forest_predict(x):
+    predictions=[]
+
+    for i, tree in enumerate(forest):
+        result=predict(x,tree)[2]
+        predictions.append(result)
+
+    if predictions.count("Pass") >= predictions.count("Fail"):
+        return "Pass"
+    else:
+        return "Fail"
+def forest_accuracy(X, Y):
+    correct = 0
+
+    for i in range(len(X)):
+        result = forest_predict(X[i])
+
+        if result == Y[i]:
+            correct += 1
+
+    return correct / len(X)
+print("Forest training accuracy", forest_accuracy(X_train, Y_train))
+print("Forest testing accuracy", forest_accuracy(X_test, Y_test))

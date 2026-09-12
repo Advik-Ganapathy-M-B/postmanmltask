@@ -308,7 +308,7 @@ for i in range(100):
 
     tree(X_bootstrap, Y_bootstrap)
 
-    current_tree = (X_bootstrap, splits.copy(), leaf.copy(), leafdata.copy())
+    current_tree = (X_bootstrap,Y_bootstrap,splits.copy(),leaf.copy(),leafdata.copy())
     forest.append(current_tree)
     treeimportance = importancecalc(splits, len(X_bootstrap))
     for i in range(len(treeimportance)):

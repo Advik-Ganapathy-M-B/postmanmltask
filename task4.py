@@ -434,5 +434,6 @@ print("My predictions: ",my_predictions)"""
 print("Forest testing accuracy", forest_accuracy(X_test, Y_test))
 print("Single tree training accuracy",accuracy(X_train, Y_train))
 print("Single tree testing accuracy",accuracy(X_test, Y_test))"""
-for i in range (1,len(forest_importance)+1):
-    print("Importance of feature number",i," ",forest_importance[(i-1)],"%")
+#commenting out stretch goal to not interefere with correctness harness
+"""for i in range (1,len(forest_importance)+1):
+    print("Importance of feature number",i," ",forest_importance[(i-1)],"%")"""

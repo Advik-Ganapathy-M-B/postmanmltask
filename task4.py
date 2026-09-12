@@ -226,7 +226,15 @@ def tree(X,Y):
                 Y=dataright
                 finish=0
     return leaf,leafdata
-    
+leaf = []
+leafdata = []
+pendingnodes = []
+pendingdata = []
+splits = []
+
+tree(X_train, Y_train)
+
+single_tree = (X_train, splits.copy(), leaf.copy(), leafdata.copy())
 forest = []
 
 for i in range(50):
@@ -242,6 +250,35 @@ for i in range(50):
 
     current_tree = (X_bootstrap, splits.copy(), leaf.copy(), leafdata.copy())
     forest.append(current_tree)
+def singletreepredict(x):
+    rightnodes=[]
+    leftnodes=[]
+    X_train,splits,leaf,leafdata = single_tree
+    currentbranch=X_train
+
+    while True:
+        foundsplit=False
+
+        for split in splits:
+            inputbranch,feature,threshold,leftbranch,rightbranch = split
+
+            if currentbranch==inputbranch:
+
+                if x[feature]<threshold:
+                    leftnodes.append(x)
+                    currentbranch=leftbranch
+                else:
+                    rightnodes.append(x)
+                    currentbranch=rightbranch
+
+                foundsplit=True
+                break
+
+        if foundsplit==False:
+            for i in range(len(leaf)):
+                if currentbranch==leaf[i]:
+                    result=leafdata[i][0]
+                    return rightnodes,leftnodes,result
 
 def predict(x,current_tree):
     rightnodes=[]
@@ -278,7 +315,7 @@ def accuracy(X,Y):
     correct=0
     
     for i in range(len(X)):
-        result=predict(X[i])[2]
+        result=singletreepredict(X[i])[2]
         
         if result==Y[i]:
             correct+=1
@@ -307,3 +344,18 @@ def forest_accuracy(X, Y):
     return correct / len(X)
 print("Forest training accuracy", forest_accuracy(X_train, Y_train))
 print("Forest testing accuracy", forest_accuracy(X_test, Y_test))
+
+from sklearn.tree import DecisionTreeClassifier
+sklearn_tree = DecisionTreeClassifier(criterion="gini")
+sklearn_tree.fit(X_train, Y_train)
+
+sklearn_predictions = sklearn_tree.predict(X_test)
+sklearn_accuracy = sklearn_tree.score(X_test, Y_test)
+print("My accuracy on testing data: ",accuracy(X_test,Y_test))
+print("Sklearn testing accuracy:", sklearn_accuracy)
+print("Actual test data",Y_test)
+print("Sklearn predictions:", sklearn_predictions)
+my_predictions = []
+for x in X_test:
+    my_predictions.append(singletreepredict(x)[2])
+print("My predictions: ",my_predictions)

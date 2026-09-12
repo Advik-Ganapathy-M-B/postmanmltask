@@ -1,4 +1,5 @@
 import random
+#the features are StudyHours,Attendance,AssignmentScore,PreviousScore,SleepHours
 X_train = [
     [2, 65, 45, 50, 6],
     [3, 70, 50, 55, 6],
@@ -243,7 +244,7 @@ def tree(X,Y):
                     Y = pendingdata.pop()
                     continue
             nodeleft,noderight,dataleft,dataright,setthreshold,setfeature=result
-            splits.append((X,setfeature, setthreshold,nodeleft, noderight))
+            splits.append((X,Y,setfeature, setthreshold,nodeleft, noderight,dataleft,dataright))
             pendingnodes.append(noderight)
             pendingdata.append(dataright) #for all the right branches that we eval after all left
             if gini(dataleft)==0 and finish==0:
@@ -277,12 +278,25 @@ leafdata = []
 pendingnodes = []
 pendingdata = []
 splits = []
+#stretch goal
+def impuritydecrease(Y,dataleft,dataright):
+    parentgini=gini(Y)
+    childgini=ginisplit(dataleft,dataright)
+    decrease=parentgini-childgini
+    return decrease
+def importancecalc(splits,totalsamples):
+    for split in splits:
+        decrease=impuritydecrease(split[1],split[6],split[7])
+        weighted_decrease = decrease * len(split[1]) /totalsamples
+        feature_importance[split[2]] += weighted_decrease
+    return feature_importance
 
 tree(X_train, Y_train)
 
-single_tree = (X_train, splits.copy(), leaf.copy(), leafdata.copy())
+single_tree = (X_train,Y_train, splits.copy(), leaf.copy(), leafdata.copy())
+feature_importance = [0, 0, 0, 0, 0]
 forest = []
-
+forest_importance = [0,0,0,0,0]
 for i in range(100):
     X_bootstrap, Y_bootstrap = bootstrap(X_train, Y_train)
 
@@ -296,17 +310,25 @@ for i in range(100):
 
     current_tree = (X_bootstrap, splits.copy(), leaf.copy(), leafdata.copy())
     forest.append(current_tree)
+    treeimportance = importancecalc(splits, len(X_bootstrap))
+    for i in range(len(treeimportance)):
+        forest_importance[i]+=treeimportance[i]
+for i in range(len(forest_importance)):
+    forest_importance[i]=forest_importance[i]/100
+total = sum(forest_importance)
+for i in range(len(forest_importance)):
+    forest_importance[i] = (forest_importance[i] / total)*100
 def singletreepredict(x):
     rightnodes=[]
     leftnodes=[]
-    X_train,splits,leaf,leafdata = single_tree
+    X_train,Y_train,splits,leaf,leafdata = single_tree
     currentbranch=X_train
 
     while True:
         foundsplit=False
 
         for split in splits:
-            inputbranch,feature,threshold,leftbranch,rightbranch = split
+            inputbranch,inputdata,feature,threshold,leftbranch,rightbranch,dataleft,dataright = split
 
             if currentbranch==inputbranch:
 
@@ -331,13 +353,13 @@ def predict(x,current_tree):
     rightnodes=[]
     leftnodes=[]
     
-    X_bootstrap,splits, leaf, leafdata = current_tree
+    X_bootstrap,Y_bootstrap,splits, leaf, leafdata = current_tree
     currentbranch=X_bootstrap
     while True:
         foundsplit=False
         
         for split in splits:
-            inputbranch,feature,threshold,leftbranch,rightbranch=split
+            inputbranch,inputdata,feature,threshold,leftbranch,rightbranch,dataleft,dataright=split
             
             if currentbranch==inputbranch:
                 
@@ -408,7 +430,9 @@ for x in X_test:
     my_predictions.append(singletreepredict(x)[2])
 print("My predictions: ",my_predictions)"""
 #to compare accuracy and overfitting
-print("Forest training accuracy", forest_accuracy(X_train, Y_train))
+"""print("Forest training accuracy", forest_accuracy(X_train, Y_train))
 print("Forest testing accuracy", forest_accuracy(X_test, Y_test))
 print("Single tree training accuracy",accuracy(X_train, Y_train))
-print("Single tree testing accuracy",accuracy(X_test, Y_test))
+print("Single tree testing accuracy",accuracy(X_test, Y_test))"""
+for i in range (1,len(forest_importance)+1):
+    print("Importance of feature number",i," ",forest_importance[(i-1)],"%")

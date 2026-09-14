@@ -1,4 +1,6 @@
 # Explanation of code and technical choices made
+Name: Advik Ganapathy M B
+BITS ID: 2026A7PS0354P
 
 ## task4.py 
 
@@ -33,6 +35,9 @@ I'm constantly storing information of each split into a splits list for later.
 This function also involves changing X and Y entered to keep the loop running and make the first line of the function not only a check for the input data but also for the next iteration's Y. 
 You can see the constant left side checking from the use of continue until left side is done and the finish variable is changed. Then we evaluate the right side branches. Once right is done till wherever possible we again switch to left by making finish=0. This function finally returns the leaf and leafdata
 
+
+I have only implemented classification and not basic regression as the data I was working on was just Pass/Fail data (categorical) rather than a continuous numerical value so basic regression was not applicable.
+
 Line 275-320: Single majority stores if pass or fail is more common, this is used for a fallback later.
 Then we move to the implementation of the stretch goal which is feature importance 
 Impurity decrease finds the decrease in gini impurity caused by splitting at that given feature, as each forest involves 100 trees we find the weighted average of each feature's decrease in impurity and normalize it. This is then converted to percentages to show each feature's importance in that run.
@@ -44,7 +49,23 @@ Here I made a fallback incase it doesnt find a leaf it will return the majority 
 Line 352-381: Uses the same logic as single tree predict, just that for forest we use boostrapped data
 Here the fallback for not finding a leaf is set to None as in a forest the majority voting of all the trees will give a Pass/Fail result at the end anyway so I do not need to make this one tree (if any) return a Pass/Fail value incase of error
 
+Line 382-391: Finding number of correct answers by comparisons and returning it
 
+Line 392-402: This forest predict uses the predict function but enforces majority voting for each group that it receives and returns the majority vote 
+
+Line 403-412: Checks accuracy of the forest by comparing each value predicted with actual value
+
+Line 413-414: Print statements to test the accuracy of the forest on training and testing data
+
+Line 417-422: Comparing with sklearn for task 4.6, the print statements are commented out 
+
+Line 423-439: All print statements to test every feature in my program and see the results
 
 ## correctnessharness.py 
+Imports sklearn and my program and compares their pretrained models with my implementation. 
+There are 3 tests for gini, tree predictions and forest predictions.
+For gini impurity their gini function and my implementation is tested on a small set of data.
+For tree prediction the lists of my predictions and sklearn predictions are compared, if they are same its classified as Pass.
+In forest prediction if the sklearn prediction and my prediction are within 15% accuracy it is a Pass.
 
+Thank you.

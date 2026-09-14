@@ -68,4 +68,7 @@ For gini impurity their gini function and my implementation is tested on a small
 For tree prediction the lists of my predictions and sklearn predictions are compared, if they are same its classified as Pass.
 In forest prediction if the sklearn prediction and my prediction are within 15% accuracy it is a Pass.
 
+
+All commits to task4.py have been done in order of the task requirements so any version can be accessed on github (any output to be shown in those sub tasks have been shown in those comments too)
+
 Thank you.
